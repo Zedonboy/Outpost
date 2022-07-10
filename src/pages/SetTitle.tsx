@@ -81,8 +81,8 @@ export default function SetTitle() {
         />
         <div className="mt-4">
           <Button onClick={(e : any) => {
-            if(connectorRef.current?.connected){
-              connectorRef.current.createSession()
+            if(!connectorRef.current?.connected){
+              connectorRef.current?.createSession()
             }
           }}>Mint</Button>
         </div>
