@@ -1,10 +1,12 @@
+
 import {
   BrowserRouter,
   Routes,
   Route,
 } from "react-router-dom";
-import Editor from './pages/Editor.jsx';
-import SetTitle from "./pages/SetTitle.jsx"
+//@ts-ignore
+import Editor from "./pages/Editor.js";
+import SetTitle from "./pages/SetTitle"
 import Home from './pages/Home';
 
 function App() {

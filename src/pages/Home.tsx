@@ -1,6 +1,6 @@
 import {SearchIcon} from "@heroicons/react/outline"
 import Button from "../components/Button"
-import AltBtn from "../components/Altbutton.jsx"
+import AltBtn from "../components/Altbutton.js"
 import herobg from "../assets/images/heroimage.png"
 export default function Home() {
     return (
