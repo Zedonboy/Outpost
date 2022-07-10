@@ -56,8 +56,6 @@ export default function Editor() {
     //@ts-ignore
     editorRef.current = editorjs;
 
-    editorjs.save().then(data => {
-    })
   }, []);
   return (
     <main className="bg-gradient-to-r px-4 md:px-32">
