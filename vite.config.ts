@@ -14,6 +14,7 @@ export default defineConfig({
       transformMixedEsModules: true
     }
   },
+  define: { global: "globalThis" },
   optimizeDeps: {
     esbuildOptions: {
       // Node.js global to browser globalThis
