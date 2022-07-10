@@ -19,6 +19,7 @@
     "@editorjs/paragraph": "^2.8.0",
     "@editorjs/quote": "^2.4.0",
     "@editorjs/simple-image": "^1.4.1",
+    "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
     "@heroicons/react": "^1.0.6",
     "@json-rpc-tools/utils": "^1.7.6",
     "@tailwindcss/forms": "^0.5.2",
@@ -33,7 +34,8 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "6",
-    "recoil": "^0.7.4"
+    "recoil": "^0.7.4",
+    "rollup-plugin-polyfill-node": "^0.10.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",
