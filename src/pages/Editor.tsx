@@ -16,10 +16,13 @@ import { useEffect, useRef } from "react";
 import InsertImage from "../plugins/InsertImage"
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { EditorStateAtom } from "../../atoms/editor";
-
+import {
+  useNavigate
+} from "react-router-dom";
 export default function Editor() {
   let setEditorData = useSetRecoilState(EditorStateAtom)
   let editorRef = useRef(null);
+  const navigate = useNavigate()
   useEffect(() => {
     if (editorRef.current) return;
     let editorjs = new EditorJS({
@@ -84,6 +87,7 @@ export default function Editor() {
               editorRef.current.save().then(data => {
                 let _data = JSON.stringify(data)
                 setEditorData(_data)
+                navigate("/set-title")
               })
             }
           }}>Save</Button>
