@@ -1,3 +1,4 @@
+//@ts-nocheck
 import EditorJS from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import Link from "@editorjs/link";
