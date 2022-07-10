@@ -36,7 +36,8 @@
     "react-dom": "^18.0.0",
     "react-router-dom": "6",
     "recoil": "^0.7.4",
-    "rollup-plugin-polyfill-node": "^0.10.1"
+    "rollup-plugin-polyfill-node": "^0.10.1",
+    "tslib": "^2.4.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

@@ -42,7 +42,10 @@ export default function SetTitle() {
       const nftClient = new NFTStorage({ token: NFT_STORAGE_TOKEN });
 
       (async () => {
+        console.log("starting to get params")
         let params = await algodClient.getTransactionParams().do();
+        console.log("getting account information")
+        console.log(addr)
         let accountInfo = await algodClient.accountInformation(addr).do();
         if (accountInfo.amount > params.fee) {
           //@ts-ignore
@@ -89,11 +92,15 @@ export default function SetTitle() {
           const result: Array<string | null> =
             await connector.sendCustomRequest(request);
           setLoading("NFT Created, Check your Wallet");
+          connector.killSession()
         } else {
+          connector.killSession()
           setLoading(undefined);
           // show a message.
         }
       })().catch((err) => {
+        console.log(err)
+        connector.killSession()
         setLoading(undefined);
       });
     });
@@ -111,6 +118,10 @@ export default function SetTitle() {
     });
 
     connectorRef.current = connector;
+
+    return() => {
+      connector.killSession()
+    }
   }, []);
   return (
     <main className="">
@@ -139,9 +150,12 @@ export default function SetTitle() {
       </nav>
 
       <div className="flex flex-col min-h-screen justify-center items-center">
-        <figure className="max-h-80 max-w-[20rem] rounded-md overflow-clip"></figure>
+       
         {imageSrc ? (
-          <img className="w-full object-cover" src={imageSrc}></img>
+           <figure className="max-h-80 max-w-[20rem] rounded-md overflow-clip">
+             <img className="w-full object-cover" src={imageSrc}></img>
+           </figure>
+         
         ) : (
           <label
             htmlFor="file-input"
@@ -196,7 +210,7 @@ export default function SetTitle() {
         "
               role="status"
             >
-              <span className="visually-hidden">Loading...</span>
+              {/* <span className="visually-hidden">Loading...</span> */}
             </div>
             <div>{loading}</div>
           </>
@@ -204,7 +218,7 @@ export default function SetTitle() {
           <div className="mt-4">
             <Button
               onClick={(e: any) => {
-                setLoading("Checking Legibility");
+                setLoading("Connecting");
                 if (!connectorRef.current?.connected) {
                   connectorRef.current?.createSession();
                 }

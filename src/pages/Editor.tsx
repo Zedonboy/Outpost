@@ -14,7 +14,7 @@ import Button from "../components/Button";
 import { SearchIcon } from "@heroicons/react/outline";
 import { useEffect, useRef } from "react";
 import InsertImage from "../plugins/InsertImage"
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { EditorStateAtom } from "../../atoms/editor";
 import {
   useNavigate
@@ -93,7 +93,7 @@ export default function Editor() {
           }}>Save</Button>
         </div>
       </nav>
-      <div className="mt-24 p-12 min-h-screen flex justify-center items-center">
+      <div className="mt-24 p-12 min-h-screen">
         <div id="editorjs"></div>
       </div>
     </main>
