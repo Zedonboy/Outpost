@@ -2,7 +2,9 @@ import {SearchIcon} from "@heroicons/react/outline"
 import Button from "../components/Button"
 import AltBtn from "../components/Altbutton.js"
 import herobg from "../assets/images/heroimage.png"
+import {useNavigate} from "react-router-dom"
 export default function Home() {
+  let navigate = useNavigate()
     return (
         <main className="bg-gradient-to-r px-4 md:px-32 from-[#984D38] to-[#181E41]">
     <nav className="flex md:px-32 px-4 fixed w-full top-0 left-0 right-0 justify-between p-1 items-center">
@@ -33,11 +35,13 @@ export default function Home() {
           Create, Sell & Collect Your Own Creative NFT
           </h1>
           <p className='text-gray-400 text-xl'>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit.
+          Create Contents and sell as NFTs in algorand chain.
           </p>
           <div className='flex mt-4 space-x-4'>
-          <Button>Create Stack</Button>
-          <AltBtn>Explore Stacks</AltBtn>
+          <Button onClick={e => {
+            navigate("/app")
+          }}>Create Content</Button>
+          <AltBtn>Read Content</AltBtn>
           </div>
         </div>
         <div className='flex'>
