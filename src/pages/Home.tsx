@@ -38,7 +38,7 @@ export default function Home() {
           Create Contents and sell as NFTs in algorand chain.
           </p>
           <div className='flex mt-4 space-x-4'>
-          <Button onClick={e => {
+          <Button onClick={(e : any) => {
             navigate("/app")
           }}>Create Content</Button>
           <AltBtn>Read Content</AltBtn>
