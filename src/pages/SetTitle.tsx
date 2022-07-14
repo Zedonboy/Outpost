@@ -1,5 +1,5 @@
 import Button from "../components/Button";
-import { SearchIcon } from "@heroicons/react/outline";
+import { SearchIcon, XIcon, CheckCircleIcon } from "@heroicons/react/outline";
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
 import algosdk from "algosdk";
@@ -11,6 +11,7 @@ const NFT_STORAGE_TOKEN =
 import { NFTStorage } from "nft.storage";
 import { useRecoilValue } from "recoil";
 import { EditorStateAtom } from "../../atoms/editor";
+import { useNavigate } from "react-router-dom";
 const port = "";
 const token = {
   "X-API-Key": "OGKyWzuveD7K0pEzegBu12PMwLe7SfV154aBTF8o",
@@ -23,8 +24,9 @@ export default function SetTitle() {
   let [title, setTitle] = useState("");
   let [imageSrc, setImageSrc] = useState<any>("");
   let [loading, setLoading] = useState<any>();
-  // let [step, setStep] = useState("")
-  let assetUrl = "";
+  let [success, setSuccess] = useState(false)
+  let navigation = useNavigate()
+  
   useEffect(() => {
     const connector = new WalletConnect({
       bridge: "https://bridge.walletconnect.org", // Required
@@ -65,6 +67,7 @@ export default function SetTitle() {
             assetName: title,
             //@ts-ignore
             assetURL: metadata.embed(),
+            unitName: title,
             suggestedParams: params,
             defaultFrozen: false,
           });
@@ -216,16 +219,50 @@ export default function SetTitle() {
           </>
         ) : (
           <div className="mt-4">
-            <Button
-              onClick={(e: any) => {
-                setLoading("Connecting");
-                if (!connectorRef.current?.connected) {
-                  connectorRef.current?.createSession();
-                }
-              }}
-            >
-              Mint
-            </Button>
+
+            {success ? (
+                 <div className="rounded-md bg-green-50 p-4">
+                 <div className="flex">
+                   <div className="flex-shrink-0">
+                     <CheckCircleIcon className="h-5 w-5 text-green-400" aria-hidden="true" />
+                   </div>
+                   <div className="ml-3">
+                     <h3 className="text-sm font-medium text-green-800">NFT Created!!</h3>
+                     <div className="mt-2 text-sm text-green-700">
+                       <p>Check Your Wallet(Pera Algo Waller)</p>
+                     </div>
+                     <div className="mt-4">
+                       <div className="-mx-2 -my-1.5 flex">
+                         <button onClick={e => {
+                          navigation(-1)
+                          
+                         }}
+                           type="button"
+                           className="bg-green-50 px-2 py-1.5 rounded-md text-sm font-medium text-green-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600"
+                         >
+                           Home
+                         </button>
+                        
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+            ) : (
+               <Button
+               onClick={(e: any) => {
+                 setLoading("Connecting");
+                 if (!connectorRef.current?.connected) {
+                   connectorRef.current?.createSession();
+                 }
+               }}
+             >
+               Mint
+             </Button>
+            )}
+           
+
+           
           </div>
         )}
       </div>
