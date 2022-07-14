@@ -56,9 +56,16 @@ export default function SetTitle() {
           let cid = await nftClient.storeBlob(blob);
           let metadata = await nftClient.store({
             //@ts-ignore
-            cover: imageSrc,
-            title,
-            content: cid,
+           
+            name: title,
+            description: title,
+            image: new Blob([""]),
+            properties: {
+              content: cid,
+              cover: imageSrc,
+              title,
+            }
+           
           });
           let txn = algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({
             from: addr,
