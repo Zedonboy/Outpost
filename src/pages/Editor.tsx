@@ -27,7 +27,8 @@ export default function Editor() {
     if (editorRef.current) return;
     let editorjs = new EditorJS({
       holder: "editorjs",
-      inlineToolbar: ['link', 'marker', 'bold', 'italic'],
+      // inlineToolbar: ['bold', 'italic', 'underline'], 
+      // inlineToolbar: ['link', 'marker', 'bold', 'italic'],
       placeholder: "Write your ideas here",
       tools: {
         insert : InsertImage,

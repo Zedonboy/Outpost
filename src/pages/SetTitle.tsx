@@ -24,10 +24,12 @@ export default function SetTitle() {
   let [title, setTitle] = useState("");
   let [imageSrc, setImageSrc] = useState<any>("");
   let [loading, setLoading] = useState<any>();
-  let [success, setSuccess] = useState(false)
-  let navigation = useNavigate()
-  
+  let [success, setSuccess] = useState(false);
+  let [rTxnId, setTxnId] = useState("")
+  let navigation = useNavigate();
+
   useEffect(() => {
+    if (connectorRef.current) return;
     const connector = new WalletConnect({
       bridge: "https://bridge.walletconnect.org", // Required
       qrcodeModal: QRCodeModal,
@@ -44,10 +46,10 @@ export default function SetTitle() {
       const nftClient = new NFTStorage({ token: NFT_STORAGE_TOKEN });
 
       (async () => {
-        console.log("starting to get params")
+        console.log("starting to get params");
         let params = await algodClient.getTransactionParams().do();
-        console.log("getting account information")
-        console.log(addr)
+        console.log("getting account information");
+        console.log(addr);
         let accountInfo = await algodClient.accountInformation(addr).do();
         if (accountInfo.amount > params.fee) {
           //@ts-ignore
@@ -56,7 +58,7 @@ export default function SetTitle() {
           let cid = await nftClient.storeBlob(blob);
           let metadata = await nftClient.store({
             //@ts-ignore
-           
+
             name: title,
             description: title,
             image: new Blob([""]),
@@ -64,24 +66,22 @@ export default function SetTitle() {
               content: cid,
               cover: imageSrc,
               title,
-            }
-           
+            },
           });
+
           let txn = algosdk.makeAssetCreateTxnWithSuggestedParamsFromObject({
             from: addr,
             total: 1,
             decimals: 0,
-            assetName: title,
+            assetName: "OutPost-Content",
             //@ts-ignore
-            assetURL: metadata.embed(),
-            unitName: title,
+            assetURL: metadata.ipnft,
             suggestedParams: params,
             defaultFrozen: false,
           });
 
           const txns = [txn];
           const txnsToSign = txns.map((txn) => {
-            //@ts-ignore
             const encodedTxn = Buffer.from(
               algosdk.encodeUnsignedTransaction(txn)
             ).toString("base64");
@@ -99,18 +99,35 @@ export default function SetTitle() {
 
           const request = formatJsonRpcRequest("algo_signTxn", requestParams);
           setLoading("Creating NFT");
+          console.log("Creating NFT");
           const result: Array<string | null> =
             await connector.sendCustomRequest(request);
-          setLoading("NFT Created, Check your Wallet");
-          connector.killSession()
+
+          const decodedResult = result.map((element) => {
+            let uintarr = element
+              ? new Uint8Array(Buffer.from(element, "base64"))
+              : null;
+           
+            // return algosdk.decodeSignedTransaction(uintarr)
+
+            return uintarr;
+          });
+           //@ts-ignore
+          let {txId} = await algodClient.sendRawTransaction(decodedResult).do()
+          let _result = await algosdk.waitForConfirmation(algodClient, txId, 3)
+          setTxnId(txId)
+          console.log(_result);
+          setLoading(undefined);
+          setSuccess(true);
+          connector.killSession();
         } else {
-          connector.killSession()
+          connector.killSession();
           setLoading(undefined);
           // show a message.
         }
       })().catch((err) => {
-        console.log(err)
-        connector.killSession()
+        console.log(err);
+        connector.killSession();
         setLoading(undefined);
       });
     });
@@ -129,10 +146,10 @@ export default function SetTitle() {
 
     connectorRef.current = connector;
 
-    return() => {
-      connector.killSession()
-    }
-  }, []);
+    return () => {
+      connector.killSession();
+    };
+  }, [title, imageSrc]);
   return (
     <main className="">
       <nav className="flex md:px-32 px-4 fixed w-full top-0 left-0 right-0 justify-between p-1 items-center">
@@ -160,12 +177,10 @@ export default function SetTitle() {
       </nav>
 
       <div className="flex flex-col min-h-screen justify-center items-center">
-       
         {imageSrc ? (
-           <figure className="max-h-80 max-w-[20rem] rounded-md overflow-clip">
-             <img className="w-full object-cover" src={imageSrc}></img>
-           </figure>
-         
+          <figure className="max-h-80 max-w-[20rem] rounded-md overflow-clip">
+            <img className="w-full object-cover" src={imageSrc}></img>
+          </figure>
         ) : (
           <label
             htmlFor="file-input"
@@ -226,50 +241,51 @@ export default function SetTitle() {
           </>
         ) : (
           <div className="mt-4">
-
             {success ? (
-                 <div className="rounded-md bg-green-50 p-4">
-                 <div className="flex">
-                   <div className="flex-shrink-0">
-                     <CheckCircleIcon className="h-5 w-5 text-green-400" aria-hidden="true" />
-                   </div>
-                   <div className="ml-3">
-                     <h3 className="text-sm font-medium text-green-800">NFT Created!!</h3>
-                     <div className="mt-2 text-sm text-green-700">
-                       <p>Check Your Wallet(Pera Algo Waller)</p>
-                     </div>
-                     <div className="mt-4">
-                       <div className="-mx-2 -my-1.5 flex">
-                         <button onClick={e => {
-                          navigation(-1)
-                          
-                         }}
-                           type="button"
-                           className="bg-green-50 px-2 py-1.5 rounded-md text-sm font-medium text-green-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600"
-                         >
-                           Home
-                         </button>
-                        
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
+              <div className="rounded-md bg-green-50 p-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <CheckCircleIcon
+                      className="h-5 w-5 text-green-400"
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-green-800">
+                      NFT Created!!
+                    </h3>
+                    <div className="mt-2 text-sm text-green-700">
+                      <p>Check Your Wallet(Pera Algo Waller)</p>
+                     Transaction Id <strong>{rTxnId}</strong>
+                    </div>
+                    <div className="mt-4">
+                      <div className="-mx-2 -my-1.5 flex">
+                        <button
+                          onClick={(e) => {
+                            navigation(-1);
+                          }}
+                          type="button"
+                          className="bg-green-50 px-2 py-1.5 rounded-md text-sm font-medium text-green-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600"
+                        >
+                          Home
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ) : (
-               <Button
-               onClick={(e: any) => {
-                 setLoading("Connecting");
-                 if (!connectorRef.current?.connected) {
-                   connectorRef.current?.createSession();
-                 }
-               }}
-             >
-               Mint
-             </Button>
+              <Button
+                onClick={(e: any) => {
+                  setLoading("Connecting");
+                  if (!connectorRef.current?.connected) {
+                    connectorRef.current?.createSession();
+                  }
+                }}
+              >
+                Mint
+              </Button>
             )}
-           
-
-           
           </div>
         )}
       </div>

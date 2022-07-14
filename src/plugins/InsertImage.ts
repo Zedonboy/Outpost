@@ -82,12 +82,16 @@ export default class InsertImage {
         content: reader.result,
       };
     }
+
+    return {
+      content: null
+    }
   }
 
-  // validate(saveData: any) {
-  //   if (!saveData.content) {
-  //     return false;
-  //   }
-  //   return true;
-  // }
+  validate(saveData: any) {
+    // if (!saveData.content) {
+    //   return false;
+    // }
+    return true;
+  }
 }
