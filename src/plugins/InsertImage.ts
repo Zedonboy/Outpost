@@ -84,10 +84,10 @@ export default class InsertImage {
     }
   }
 
-  validate(saveData: any) {
-    if (!saveData.content) {
-      return false;
-    }
-    return true;
-  }
+  // validate(saveData: any) {
+  //   if (!saveData.content) {
+  //     return false;
+  //   }
+  //   return true;
+  // }
 }
